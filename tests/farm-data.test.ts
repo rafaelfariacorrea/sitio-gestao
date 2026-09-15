@@ -21,7 +21,7 @@ describe("farm-data helpers", () => {
   });
   it("exports both financial and inventory sections to CSV", () => {
     const state = {
-      transactions: [{ id: "t1", kind: "expense", description: "Adubo", category: "Insumo", culture: "Banana", amount: 100, date: "2026-09-15T12:00:00.000Z" }],
+      transactions: [{ id: "t1", kind: "revenue", description: "Venda de banana", category: "Venda", culture: "Banana", quantityKg: 250, pricePerKg: 3.5, amount: 875, date: "2026-09-15T12:00:00.000Z" }],
       inventory: [{ id: "i1", name: "NPK", category: "Insumo", quantity: 2, unit: "sacos", minimum: 1, expiresAt: "2026-12-31", updatedAt: "2026-09-15T12:00:00.000Z" }],
       cropPlans: [], location: { latitude: 0, longitude: 0, label: "Teste" },
     };
@@ -30,6 +30,8 @@ describe("farm-data helpers", () => {
     expect(csv).toContain("FINANÇAS");
     expect(csv).toContain("INVENTÁRIO");
     expect(csv).toContain("Banana");
+    expect(csv).toContain("250");
+    expect(csv).toContain("3,50");
     expect(csv).toContain("2026-12-31");
   });
 });

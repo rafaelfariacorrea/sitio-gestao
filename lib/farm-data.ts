@@ -9,6 +9,8 @@ export type Transaction = {
   description: string;
   category: string;
   culture?: CropName;
+  quantityKg?: number;
+  pricePerKg?: number;
   amount: number;
   date: string;
 };
