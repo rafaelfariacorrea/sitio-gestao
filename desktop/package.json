@@ -1,0 +1,25 @@
+{
+  "name": "sitio-gestao-rafael-correa",
+  "version": "1.0.0",
+  "description": "Sítio Gestão — painel financeiro e inventário de Rafael Correa",
+  "main": "main.cjs",
+  "author": { "name": "Rafael Correa", "email": "rafael.correa@example.com" },
+  "homepage": "https://sitgestao-aeejzmrd.manus.space",
+  "repository": { "type": "git", "url": "https://github.com/rafaelfariacorrea/sitio-gestao.git" },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "electron-builder --linux deb --win nsis"
+  },
+  "build": {
+    "appId": "com.rafaelcorrea.sitiogestao",
+    "productName": "Sítio Gestão — Rafael Correa",
+    "artifactName": "Sitio-Gestao-Rafael-Correa-${version}-${os}-${arch}.${ext}",
+    "directories": { "output": "../dist-desktop" },
+    "files": ["main.cjs", "../dist/**/*"],
+    "linux": { "target": ["deb"], "category": "Office", "synopsis": "Gestão rural financeira e de inventário", "maintainer": "Rafael Correa <rafael.correa@example.com>" },
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "signAndEditExecutable": false, "forceCodeSigning": false },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "createStartMenuShortcut": true, "shortcutName": "Sítio Gestão — Rafael Correa" }
+  },
+  "devDependencies": { "electron": "^38.1.0", "electron-builder": "^26.0.12" }
+}
