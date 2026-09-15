@@ -9,27 +9,11 @@ export default function TabLayout() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const bottomPadding = Platform.OS === "web" ? 10 : Math.max(insets.bottom, 8);
-  return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.muted,
-        tabBarButton: HapticTab,
-        tabBarStyle: {
-          height: 62 + bottomPadding,
-          paddingTop: 7,
-          paddingBottom: bottomPadding,
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-        },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: "600" },
-      }}
-    >
-      <Tabs.Screen name="index" options={{ title: "Resumo", tabBarIcon: ({ color }) => <IconSymbol name="dashboard" size={22} color={color} /> }} />
-      <Tabs.Screen name="finance" options={{ title: "Finanças", tabBarIcon: ({ color }) => <IconSymbol name="account-balance-wallet" size={22} color={color} /> }} />
-      <Tabs.Screen name="inventory" options={{ title: "Estoque", tabBarIcon: ({ color }) => <IconSymbol name="inventory-2" size={22} color={color} /> }} />
-      <Tabs.Screen name="crops" options={{ title: "Safras", tabBarIcon: ({ color }) => <IconSymbol name="agriculture" size={22} color={color} /> }} />
-    </Tabs>
-  );
+  return <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primary, tabBarInactiveTintColor: colors.muted, tabBarButton: HapticTab, tabBarStyle: { height: 62 + bottomPadding, paddingTop: 7, paddingBottom: bottomPadding, backgroundColor: colors.surface, borderTopColor: colors.border }, tabBarLabelStyle: { fontSize: 10, fontWeight: "600" } }}>
+    <Tabs.Screen name="index" options={{ title: "Resumo", tabBarIcon: ({ color }) => <IconSymbol name="dashboard" size={22} color={color} /> }} />
+    <Tabs.Screen name="finance" options={{ title: "Finanças", tabBarIcon: ({ color }) => <IconSymbol name="account-balance-wallet" size={22} color={color} /> }} />
+    <Tabs.Screen name="inventory" options={{ title: "Estoque", tabBarIcon: ({ color }) => <IconSymbol name="inventory-2" size={22} color={color} /> }} />
+    <Tabs.Screen name="crops" options={{ title: "Safras", tabBarIcon: ({ color }) => <IconSymbol name="agriculture" size={22} color={color} /> }} />
+    <Tabs.Screen name="analytics" options={{ title: "Análises", tabBarIcon: ({ color }) => <IconSymbol name="bar-chart" size={22} color={color} /> }} />
+  </Tabs>;
 }
