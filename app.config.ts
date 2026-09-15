@@ -10,7 +10,7 @@ const config: ExpoConfig = {
   scheme: "sitiogestao",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
-  ios: { supportsTablet: true, bundleIdentifier: "space.manus.sitio.gestao" },
+  ios: { supportsTablet: true, requireFullScreen: false, bundleIdentifier: "space.manus.sitio.gestao", infoPlist: { ITSAppUsesNonExemptEncryption: false } },
   android: {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,

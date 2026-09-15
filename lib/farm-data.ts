@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type CropName = "Banana" | "Batata-doce" | "Abobrinha verde";
 export type TransactionKind = "expense" | "revenue";
+export type MeasurementUnit = "kg" | "caixa" | "saco" | "tonelada";
 
 export type Transaction = {
   id: string;
@@ -9,6 +10,9 @@ export type Transaction = {
   description: string;
   category: string;
   culture?: CropName;
+  quantity?: number;
+  unit?: MeasurementUnit;
+  kgPerUnit?: number;
   quantityKg?: number;
   pricePerKg?: number;
   amount: number;
@@ -70,6 +74,14 @@ export async function saveFarmState(state: FarmState) { await AsyncStorage.setIt
 export function formatCurrency(value: number | null | undefined) { if (value === null || value === undefined || Number.isNaN(value)) return "R$ —"; return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
 export function formatDate(date: string) { return new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }); }
 export function formatFullDate(date: string) { return new Date(date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+
+export function convertToKg(quantity?: number, unit?: MeasurementUnit, kgPerUnit?: number) {
+  if (quantity === undefined || !Number.isFinite(quantity)) return undefined;
+  if (unit === "kg") return quantity;
+  if (unit === "tonelada") return quantity * 1000;
+  if ((unit === "caixa" || unit === "saco") && kgPerUnit && kgPerUnit > 0) return quantity * kgPerUnit;
+  return undefined;
+}
 
 export function daysUntil(date?: string, now = new Date()) {
   if (!date) return null;

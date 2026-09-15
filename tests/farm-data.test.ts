@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildCsv } from "../lib/export-helpers";
-import { daysUntil, formatCurrency, formatDate, isExpired, isExpiringSoon, makeId } from "../lib/farm-data";
+import { convertToKg, daysUntil, formatCurrency, formatDate, isExpired, isExpiringSoon, makeId } from "../lib/farm-data";
 
 describe("farm-data helpers", () => {
   it("formats Brazilian currency", () => {
@@ -19,9 +19,14 @@ describe("farm-data helpers", () => {
     expect(isExpired("2026-09-10", now)).toBe(true);
     expect(isExpiringSoon("2026-10-01", now)).toBe(true);
   });
+  it("converts supported units to kilograms without guessing boxes or bags", () => {
+    expect(convertToKg(2, "tonelada")).toBe(2000);
+    expect(convertToKg(4, "caixa", 20)).toBe(80);
+    expect(convertToKg(4, "saco")).toBeUndefined();
+  });
   it("exports both financial and inventory sections to CSV", () => {
     const state = {
-      transactions: [{ id: "t1", kind: "revenue", description: "Venda de banana", category: "Venda", culture: "Banana", quantityKg: 250, pricePerKg: 3.5, amount: 875, date: "2026-09-15T12:00:00.000Z" }],
+      transactions: [{ id: "t1", kind: "revenue", description: "Venda de banana", category: "Venda", culture: "Banana", quantity: 10, unit: "caixa", kgPerUnit: 25, quantityKg: 250, pricePerKg: 3.5, amount: 875, date: "2026-09-15T12:00:00.000Z" }],
       inventory: [{ id: "i1", name: "NPK", category: "Insumo", quantity: 2, unit: "sacos", minimum: 1, expiresAt: "2026-12-31", updatedAt: "2026-09-15T12:00:00.000Z" }],
       cropPlans: [], location: { latitude: 0, longitude: 0, label: "Teste" },
     };
@@ -31,6 +36,7 @@ describe("farm-data helpers", () => {
     expect(csv).toContain("INVENTÁRIO");
     expect(csv).toContain("Banana");
     expect(csv).toContain("250");
+    expect(csv).toContain("caixa");
     expect(csv).toContain("3,50");
     expect(csv).toContain("2026-12-31");
   });
