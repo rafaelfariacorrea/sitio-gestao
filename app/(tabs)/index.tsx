@@ -8,6 +8,7 @@ import { formatCurrency, formatDate, isExpired, isExpiringSoon } from "@/lib/far
 import { fetchMarketQuotes, fetchWeather, MarketQuote, WeatherSnapshot, weatherLabel } from "@/lib/live-data";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
+import { InstallAppCard } from "@/components/install-app";
 
 export default function HomeScreen() {
   const colors = useColors();
@@ -36,7 +37,8 @@ export default function HomeScreen() {
         onRefresh={refreshLiveData}
         renderItem={() => null}
         ListHeaderComponent={<View className="pb-8">
-          <AppHeader eyebrow="SÍTIO GESTÃO" title="Bom dia, produtor." subtitle="Uma visão prática para decidir o que fazer hoje no sítio." />
+          <AppHeader eyebrow="SÍTIO GESTÃO" title="Bom dia, Rafael Correa." subtitle="Uma visão prática para você decidir o que fazer hoje no sítio." />
+          <InstallAppCard />
           <View className="mb-5 rounded-3xl bg-primary p-5"><View className="flex-row items-center justify-between"><View className="flex-1 pr-3"><Text className="text-xs font-bold uppercase tracking-widest text-white/70">Saldo acumulado</Text><Text className="mt-2 text-3xl font-bold text-white">{formatCurrency(balance)}</Text><Text className="mt-1 text-sm leading-5 text-white/75">Receitas menos despesas lançadas neste aparelho.</Text></View><View className="rounded-2xl bg-white/15 p-3"><IconSymbol name="eco" size={30} color="#FFFFFF" /></View></View><View className="mt-5 flex-row gap-2"><View className="flex-1 rounded-2xl bg-white/10 p-3"><Text className="text-xs text-white/70">Entradas</Text><Text className="mt-1 font-bold text-white">{formatCurrency(revenue)}</Text></View><View className="flex-1 rounded-2xl bg-white/10 p-3"><Text className="text-xs text-white/70">Saídas</Text><Text className="mt-1 font-bold text-white">{formatCurrency(expenses)}</Text></View></View></View>
           <View className="mb-6 flex-row gap-2"><MetricCard label="Lançamentos" value={String(state.transactions.length)} icon="receipt-long" /><MetricCard label="Itens estoque" value={String(state.inventory.length)} icon="inventory-2" tone={state.inventory.length ? "positive" : "neutral"} /><MetricCard label="Alertas" value={String(state.inventory.filter((item) => item.quantity <= item.minimum || isExpired(item.expiresAt) || isExpiringSoon(item.expiresAt)).length)} icon="warning" tone={state.inventory.some((item) => item.quantity <= item.minimum || isExpired(item.expiresAt) || isExpiringSoon(item.expiresAt)) ? "warning" : "neutral"} /></View>
           {state.inventory.some((item) => item.quantity <= item.minimum || isExpired(item.expiresAt) || isExpiringSoon(item.expiresAt)) ? <View className="mb-6 rounded-2xl border border-warning bg-amber-50 p-4"><View className="flex-row items-center"><IconSymbol name="warning" size={19} color={colors.warning} /><Text className="ml-2 flex-1 text-sm font-semibold leading-5 text-foreground">Atenção: há itens abaixo do estoque mínimo ou com validade vencida/próxima.</Text></View></View> : null}
