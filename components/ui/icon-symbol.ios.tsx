@@ -1,32 +1,30 @@
-import { SymbolView, SymbolViewProps, SymbolWeight } from "expo-symbols";
-import { StyleProp, ViewStyle } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import type { ComponentProps } from "react";
+import type { OpaqueColorValue, StyleProp, TextStyle } from "react-native";
+
+type IconName = ComponentProps<typeof MaterialIcons>["name"];
+
+const legacyMap: Record<string, IconName> = {
+  "house.fill": "home",
+  "paperplane.fill": "send",
+  "chevron.left.forwardslash.chevron.right": "code",
+  "chevron.right": "chevron-right",
+};
 
 export function IconSymbol({
   name,
   size = 24,
   color,
   style,
-  weight = "regular",
+  weight,
 }: {
-  name: SymbolViewProps["name"];
+  name: IconName | string;
   size?: number;
-  color: string;
-  style?: StyleProp<ViewStyle>;
-  weight?: SymbolWeight;
+  color: string | OpaqueColorValue;
+  style?: StyleProp<TextStyle>;
+  weight?: string;
 }) {
-  return (
-    <SymbolView
-      weight={weight}
-      tintColor={color}
-      resizeMode="scaleAspectFit"
-      name={name}
-      style={[
-        {
-          width: size,
-          height: size,
-        },
-        style,
-      ]}
-    />
-  );
+  void weight;
+  const materialName = legacyMap[name] ?? (name as IconName);
+  return <MaterialIcons color={color} size={size} name={materialName} style={style} />;
 }

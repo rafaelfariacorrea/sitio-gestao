@@ -1,0 +1,52 @@
+import { useMemo, useState } from "react";
+import { FlatList, Text, View } from "react-native";
+import { ScreenContainer } from "@/components/screen-container";
+import { AppHeader, EmptyState, Field, PrimaryButton, SectionTitle } from "@/components/app-ui";
+import { useFarm } from "@/lib/farm-context";
+import { useColors } from "@/hooks/use-colors";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+
+export default function InventoryScreen() {
+  const colors = useColors();
+  const { state, addInventoryItem } = useFarm();
+  const [showForm, setShowForm] = useState(false);
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("Insumo");
+  const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("un");
+  const [minimum, setMinimum] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const alerts = useMemo(() => state.inventory.filter((item) => item.quantity <= item.minimum), [state.inventory]);
+
+  function submit() {
+    const parsedQuantity = Number(quantity.replace(",", "."));
+    const parsedMinimum = Number(minimum.replace(",", "."));
+    if (!name.trim() || !Number.isFinite(parsedQuantity) || parsedQuantity < 0 || !Number.isFinite(parsedMinimum) || parsedMinimum < 0) {
+      setFeedback("Preencha nome, quantidade e mínimo com números válidos.");
+      return;
+    }
+    addInventoryItem({ name: name.trim(), category: category.trim() || "Insumo", quantity: parsedQuantity, unit: unit.trim() || "un", minimum: parsedMinimum });
+    setName(""); setCategory("Insumo"); setQuantity(""); setUnit("un"); setMinimum(""); setShowForm(false); setFeedback("Item adicionado ao inventário.");
+  }
+
+  return (
+    <ScreenContainer className="px-5 pt-6" edges={["top", "left", "right"]}>
+      <FlatList
+        data={state.inventory}
+        keyExtractor={(item) => item.id}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={<View>
+          <AppHeader eyebrow="INVENTÁRIO DO SÍTIO" title="O que precisa entrar?" subtitle="Acompanhe insumos, defensivos, ferramentas e itens de manutenção antes que faltem." />
+          {alerts.length > 0 ? <View className="mb-4 flex-row items-center rounded-2xl border border-warning bg-amber-50 p-4"><IconSymbol name="warning" size={20} color={colors.warning} /><Text className="ml-3 flex-1 text-sm font-semibold leading-5 text-foreground">{alerts.length} {alerts.length === 1 ? "item está" : "itens estão"} no mínimo definido. Planeje a reposição.</Text></View> : null}
+          <PrimaryButton label={showForm ? "Fechar cadastro" : "Adicionar item"} icon={showForm ? "close" : "add"} onPress={() => { setShowForm((value) => !value); setFeedback(""); }} />
+          {showForm ? <View className="mt-4 rounded-2xl border border-border bg-surface p-4"><Field label="Nome do item" placeholder="Ex.: fertilizante NPK" value={name} onChangeText={setName} /><Field label="Categoria" placeholder="Insumo, veneno, ferramenta…" value={category} onChangeText={setCategory} /><View className="flex-row gap-2"><View className="flex-1"><Field label="Quantidade" placeholder="0" value={quantity} onChangeText={setQuantity} keyboardType="decimal-pad" /></View><View className="w-24"><Field label="Unidade" placeholder="un" value={unit} onChangeText={setUnit} /></View></View><Field label="Estoque mínimo" placeholder="0" value={minimum} onChangeText={setMinimum} keyboardType="decimal-pad" /><PrimaryButton label="Salvar item" icon="check" onPress={submit} /></View> : null}
+          {feedback ? <Text className="my-3 text-center text-sm font-semibold text-primary">{feedback}</Text> : null}
+          <SectionTitle title={`Itens cadastrados · ${state.inventory.length}`} />
+        </View>}
+        renderItem={({ item }) => { const low = item.quantity <= item.minimum; return <View className="mb-2 flex-row items-center rounded-2xl border border-border bg-surface p-4"><View className="rounded-xl bg-background p-2"><IconSymbol name={item.category.toLowerCase().includes("veneno") ? "science" : "inventory-2"} size={19} color={low ? colors.warning : colors.primary} /></View><View className="ml-3 flex-1"><Text className="font-semibold text-foreground">{item.name}</Text><Text className="mt-1 text-xs text-muted">{item.category} · mínimo {item.minimum} {item.unit}</Text></View><View className="items-end"><Text className={`text-lg font-bold ${low ? "text-warning" : "text-foreground"}`}>{item.quantity}</Text><Text className="text-xs text-muted">{item.unit}</Text></View></View>; }}
+        ListEmptyComponent={<EmptyState icon="inventory-2" title="Inventário vazio" body="Cadastre fertilizantes, defensivos, ferramentas e materiais para acompanhar o consumo." />}
+        contentContainerStyle={{ paddingBottom: 32 }}
+      />
+    </ScreenContainer>
+  );
+}
