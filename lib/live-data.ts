@@ -15,6 +15,10 @@ export type MarketQuote = {
   fetchedAt: string;
 };
 
+export function hasAvailableMarketQuote(quotes: MarketQuote[]) {
+  return quotes.some((quote) => typeof quote.value === "number" && Number.isFinite(quote.value));
+}
+
 const CONAB_URL = "https://pentahoportaldeinformacoes.conab.gov.br/pentaho/api/repos/%3Ahome%3APROHORT%3AprecoDia.wcdf/generatedContent?userid=pentaho&password=password";
 const SOURCE = "Conab / Prohort — média das praças disponíveis";
 

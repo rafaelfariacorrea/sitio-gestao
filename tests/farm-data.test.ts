@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildCsv } from "../lib/export-helpers";
 import { convertToKg, daysUntil, formatCurrency, formatDate, isExpired, isExpiringSoon, makeId } from "../lib/farm-data";
+import { hasAvailableMarketQuote } from "../lib/live-data";
 
 describe("farm-data helpers", () => {
   it("formats Brazilian currency", () => {
@@ -23,6 +24,10 @@ describe("farm-data helpers", () => {
     expect(convertToKg(2, "tonelada")).toBe(2000);
     expect(convertToKg(4, "caixa", 20)).toBe(80);
     expect(convertToKg(4, "saco")).toBeUndefined();
+  });
+  it("does not treat empty market responses as real prices", () => {
+    expect(hasAvailableMarketQuote([{ product: "Banana", value: null, unit: "kg", source: "Conab", fetchedAt: "2026-09-16" }])).toBe(false);
+    expect(hasAvailableMarketQuote([{ product: "Banana", value: 4.2, unit: "kg", source: "Conab", fetchedAt: "2026-09-16" }])).toBe(true);
   });
   it("exports both financial and inventory sections to CSV", () => {
     const state = {
