@@ -43,7 +43,7 @@ jobs:
           pnpm test
 
       - name: Build APK on EAS
-        run: pnpm exec eas-cli build --platform android --profile preview --non-interactive --no-wait
+        run: pnpm dlx eas-cli@latest build --platform android --profile preview --non-interactive --no-wait
 
       - name: Build summary
         if: always()
