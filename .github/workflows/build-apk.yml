@@ -1,0 +1,53 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-apk:
+    name: Build APK with EAS
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate project
+        run: |
+          pnpm check
+          pnpm test
+
+      - name: Build APK on EAS
+        run: pnpm exec eas-cli build --platform android --profile preview --non-interactive --no-wait
+
+      - name: Build summary
+        if: always()
+        run: |
+          echo "The EAS build was submitted. Open the Expo dashboard to monitor progress and download the APK artifact."
+          echo "Project: sitio-gestao"
+          echo "Profile: preview"
