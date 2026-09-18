@@ -42,9 +42,6 @@ jobs:
           pnpm check
           pnpm test
 
-      - name: Link project to Expo account
-        run: pnpm dlx eas-cli@latest init --force --non-interactive
-
       - name: Build APK on EAS
         run: pnpm dlx eas-cli@latest build --platform android --profile preview --non-interactive --no-wait
 
