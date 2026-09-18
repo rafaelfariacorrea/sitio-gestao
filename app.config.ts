@@ -4,13 +4,14 @@ import type { ExpoConfig } from "expo/config";
 const config: ExpoConfig = {
   name: "Sítio Gestão",
   slug: "sitio-gestao",
+  owner: "rafaelfariacorrea",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "sitiogestao",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
-  ios: { supportsTablet: true, requireFullScreen: false, bundleIdentifier: "space.manus.sitio.gestao", infoPlist: { ITSAppUsesNonExemptEncryption: false } },
+  ios: { supportsTablet: true, requireFullScreen: false, bundleIdentifier: "space.manus.sitio.gestao", entitlements: { "aps-environment": "production" }, infoPlist: { ITSAppUsesNonExemptEncryption: false } },
   android: {
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -18,7 +19,7 @@ const config: ExpoConfig = {
     permissions: ["POST_NOTIFICATIONS"],
   },
   web: { bundler: "metro", output: "static", favicon: "./assets/images/favicon.png" },
-  plugins: ["expo-router", "expo-notifications", "expo-splash-screen"],
+  plugins: ["expo-router", "expo-notifications", ["expo-location", { locationWhenInUsePermission: "Permitir que o Sítio Gestão use a localização do sítio." }], "expo-splash-screen"],
   experiments: { typedRoutes: true, reactCompiler: true },
 };
 
