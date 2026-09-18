@@ -5,6 +5,7 @@ const config: ExpoConfig = {
   name: "Sítio Gestão",
   slug: "sitio-gestao",
   owner: "rafaelfariacorrea",
+  extra: { eas: { projectId: "d13c59a9-3408-4405-8a31-09ce4c04eee5" } },
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
