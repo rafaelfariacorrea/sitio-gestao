@@ -43,11 +43,22 @@ jobs:
           pnpm test
 
       - name: Build APK on EAS
-        run: pnpm dlx eas-cli@latest build --platform android --profile preview --non-interactive --no-wait
+        run: |
+          for attempt in 1 2 3; do
+            echo "EAS build attempt ${attempt}/3"
+            if pnpm dlx eas-cli@latest build --platform android --profile preview --non-interactive --no-wait; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "EAS unavailable or busy; retrying in 30 seconds..."
+              sleep 30
+            fi
+          done
+          exit 1
 
       - name: Build summary
         if: always()
         run: |
-          echo "The EAS build was submitted. Open the Expo dashboard to monitor progress and download the APK artifact."
+          echo "If the build was submitted, open the Expo dashboard to monitor progress and download the APK artifact."
           echo "Project: sitio-gestao"
           echo "Profile: preview"
